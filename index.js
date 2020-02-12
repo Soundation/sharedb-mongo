@@ -856,6 +856,43 @@ function opContainsAnyField(op, fields) {
 
 // Utility methods
 
+ShareDbMongo.prototype.getChangelog = function(collectionName, id, options, callback) {
+  var bucket = options && typeof options.bucket === 'number' && options.bucket > 0 ? options.bucket : null;
+  var since = options && typeof options.since === 'number' && options.since >= 0 ? options.since : null;
+  var sources = options && options.sources === true;
+
+  var $match = { d: id, v: { $gt: 0 }};
+  var $group = bucket != null ? {
+    _id: { $multiply: [{ $floor: { $divide: ['$m.ts', bucket]}}, bucket]},
+    t1: { $min: '$m.ts' },
+    t2: { $max: '$m.ts' },
+    v1: { $min: '$v' },
+    v2: { $max: '$v' },
+    c: { $sum: 1 },
+  } : {
+    _id: '$m.ts',
+    t: { $max: '$m.ts' },
+    v: { $max: '$v' },
+  };
+
+  if(sources) {
+    $group.src = { $addToSet: '$src' };
+  }
+
+  if(since != null) {
+    $match['m.ts'] = { $gte: since };
+  }
+
+  this.getOpCollection(collectionName, function(err, opCollection) {
+    if (err) return callback(err);
+    opCollection.aggregate([
+      { $match },
+      { $group },
+      { $sort: { '_id': 1 }}
+    ]).toArray(callback);
+  });
+}
+
 // Return {code: ..., message: ...}  on error. Call before parseQuery.
 ShareDbMongo.prototype.checkQuery = function(query) {
   if (query.$query) {
