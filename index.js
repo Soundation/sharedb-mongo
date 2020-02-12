@@ -857,22 +857,18 @@ function opContainsAnyField(op, fields) {
 // Utility methods
 
 ShareDbMongo.prototype.getChangelog = function(collectionName, id, options, callback) {
-  var bucket = options && typeof options.bucket === 'number' && options.bucket > 0 ? options.bucket : null;
+  var bucket = options && typeof options.bucket === 'number' && options.bucket > 0 ? options.bucket : 1000;
   var since = options && typeof options.since === 'number' && options.since >= 0 ? options.since : null;
   var sources = options && options.sources === true;
 
   var $match = { d: id, v: { $gt: 0 }};
-  var $group = bucket != null ? {
+  var $group = {
     _id: { $multiply: [{ $floor: { $divide: ['$m.ts', bucket]}}, bucket]},
     t1: { $min: '$m.ts' },
     t2: { $max: '$m.ts' },
     v1: { $min: '$v' },
     v2: { $max: '$v' },
     c: { $sum: 1 },
-  } : {
-    _id: '$m.ts',
-    t: { $max: '$m.ts' },
-    v: { $max: '$v' },
   };
 
   if(sources) {
@@ -888,7 +884,8 @@ ShareDbMongo.prototype.getChangelog = function(collectionName, id, options, call
     opCollection.aggregate([
       { $match },
       { $group },
-      { $sort: { '_id': 1 }}
+      { $sort: { '_id': 1 }},
+      { $project: { _id: 0 }}
     ]).toArray(callback);
   });
 }
