@@ -24,7 +24,7 @@
     "test": "node_modules/.bin/mocha",
     "test-cover": "node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha"
   },
-  "repository": "git://github.com/soundation/sharedb-mongo.git",
+  "repository": "https://gitlab.com/soundation/sharedb-mongo",
   "author": "Nate Smith and Joseph Gentle",
   "license": "MIT"
 }
