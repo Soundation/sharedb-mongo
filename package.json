@@ -7,7 +7,7 @@
     "async": "^2.6.1"
   },
   "peerDependencies": {
-    "mongodb": "^3.1.0",
+    "mongodb": "^3.2.7",
     "@soundation/sharedb": "^3.0.0"
   },
   "devDependencies": {
@@ -18,7 +18,7 @@
     "expect.js": "^0.3.1",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
-    "mongodb": "^3.1.0"
+    "mongodb": "^3.2.7"
   },
   "scripts": {
     "test": "node_modules/.bin/mocha",
