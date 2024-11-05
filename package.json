@@ -25,6 +25,9 @@
     "test-cover": "node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha"
   },
   "repository": "https://gitlab.com/soundation/sharedb-mongo",
+  "publishConfig": {
+    "@soundation:registry": "https://gitlab.com/api/v4/projects/17848855/packages/npm/"
+  },
   "author": "Nate Smith and Joseph Gentle",
   "license": "MIT"
 }
